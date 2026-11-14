@@ -1,0 +1,148 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "IBBI Circle user account and profile with salted password hash, age verification, and activity stats.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "description": "User email address" },
+        "name": { "type": "string", "description": "Display name" },
+        "dateOfBirth": { "type": "string", "description": "Date of birth in YYYY-MM-DD format" },
+        "age": { "type": "integer", "description": "Calculated age in years" },
+        "isAdult": { "type": "boolean", "description": "Whether user is confirmed 18 or older" },
+        "currentActivity": { "type": "string", "enum": ["Studying", "Working", "Both", "Exploring"] },
+        "studyField": { "type": "string", "description": "Subject or field if studying" },
+        "hobbies": { "type": "array", "description": "User hobbies and interests" },
+        "passwordHash": { "type": "string", "description": "Salted PBKDF2-HMAC-SHA256 password hash" },
+        "passwordSalt": { "type": "string", "description": "Random salt for password hash" },
+        "termsAccepted": { "type": "boolean", "description": "Whether user accepted terms and moderation disclosure" },
+        "profileCompleted": { "type": "boolean", "description": "Whether user completed profile setup" },
+        "messageCount": { "type": "integer", "description": "Total messages sent by user" },
+        "signupDate": { "type": "string", "format": "date-time", "description": "Server timestamp of initial signup" },
+        "lastLoginAt": { "type": "string", "format": "date-time", "description": "Server timestamp of last login" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp of last update" }
+      },
+      "required": [
+        "userId",
+        "email",
+        "name",
+        "dateOfBirth",
+        "age",
+        "isAdult",
+        "currentActivity",
+        "studyField",
+        "hobbies",
+        "passwordHash",
+        "passwordSalt",
+        "termsAccepted",
+        "profileCompleted",
+        "messageCount",
+        "signupDate",
+        "lastLoginAt",
+        "updatedAt"
+      ]
+    },
+    "ChatSession": {
+      "title": "ChatSession",
+      "description": "Conversation session between a user and a specific IBBI Circle persona.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "personaId": { "type": "string", "enum": ["friend", "sibling", "mentor", "partner"] },
+        "personaName": { "type": "string" },
+        "lastMessagePreview": { "type": "string" },
+        "messageCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "userId",
+        "personaId",
+        "personaName",
+        "lastMessagePreview",
+        "messageCount",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Individual chat message in text or voice mode within a session.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "personaId": { "type": "string", "enum": ["friend", "sibling", "mentor", "partner"] },
+        "sender": { "type": "string", "enum": ["user", "model"] },
+        "text": { "type": "string" },
+        "inputMode": { "type": "string", "enum": ["text", "voice"] },
+        "groundingSources": { "type": "array" },
+        "flagged": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "userId",
+        "sessionId",
+        "personaId",
+        "sender",
+        "text",
+        "inputMode",
+        "groundingSources",
+        "flagged",
+        "createdAt"
+      ]
+    },
+    "ModerationItem": {
+      "title": "ModerationItem",
+      "description": "Flagged message submitted to the admin moderation queue when concerning keywords are detected.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "userName": { "type": "string" },
+        "personaId": { "type": "string", "enum": ["friend", "sibling", "mentor", "partner"] },
+        "sessionId": { "type": "string" },
+        "messageText": { "type": "string" },
+        "matchedKeywords": { "type": "array" },
+        "severity": { "type": "string", "enum": ["medium", "high"] },
+        "status": { "type": "string", "enum": ["pending", "reviewed", "dismissed"] },
+        "reviewedBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "userId",
+        "userEmail",
+        "userName",
+        "personaId",
+        "sessionId",
+        "messageText",
+        "matchedKeywords",
+        "severity",
+        "status",
+        "reviewedBy",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User account profiles, age verification status, and encrypted password hash."
+    },
+    "/users/{userId}/sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/ChatSession" },
+      "description": "Per-user companion chat sessions."
+    },
+    "/users/{userId}/sessions/{sessionId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "Messages belonging to a user's companion chat session."
+    },
+    "/moderationQueue/{flagId}": {
+      "schema": { "$ref": "#/entities/ModerationItem" },
+      "description": "Admin moderation queue for flagged concerning messages."
+    }
+  }
+}

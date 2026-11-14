@@ -1,0 +1,6 @@
+{
+  "name": "IBBI Circle",
+  "description": "AI companion chatbot with distinct personas (Friend, Sibling, Mentor with live search grounding, and 18+ Partner), voice call mode, user profiles, and admin moderation dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

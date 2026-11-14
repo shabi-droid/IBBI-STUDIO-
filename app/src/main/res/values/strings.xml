@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">IBBI Circle</string>
+    <string name="terms_moderation_disclosure">To prevent misuse and keep our community safe, conversations—especially messages containing concerning keywords—may be reviewed by authorized moderators.</string>
+    <string name="under_18_partner_notice">Partner mode is only available for accounts confirmed 18 or older. Would you like to chat with Maya (Friend) or Leo (Sibling) instead?</string>
+</resources>
